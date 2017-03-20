@@ -1,5 +1,6 @@
 import sys
 import os
+sys.path.append('../BeadArrayFiles/module')
 from IlluminaBeadArrayFiles import GenotypeCalls, BeadPoolManifest, code2genotype
 
 
