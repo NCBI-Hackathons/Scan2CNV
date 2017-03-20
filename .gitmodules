@@ -1,0 +1,3 @@
+[submodule "BeadArrayFiles"]
+	path = BeadArrayFiles
+	url = https://github.com/Illumina/BeadArrayFiles
