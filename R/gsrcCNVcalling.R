@@ -44,5 +44,21 @@ cna.bed<-data.frame("chr"=cnv.call$cna$chrom,"s"=cnv.call$cna$loc.start,"e"=cnv.
                "num.probes"=cnv.call$cna$num.mark,"avg.probe.val"=cnv.call$cna$seg.mean)
 all.snp.bed<-data.frame("chr"=cnv.call$chr,"s"=cnv.call$pos,"geno"=cnv.call$geno,"state"=cnv.call$cnv)
 
+chrs<-names(table(cna.bed$chr))
+cna.bed$state<-"NULL"
+
+for(i in chrs){
+  all.snp.s<-sort(subset(all.snp.bed,chr==i)$s,decreasing=F)
+  cna.bed.s<-sort(subset(cna.bed,chr==i)$s,decreasing=F)
+  for(j in cna.bed.s){
+    if(length(which(j < all.snp.s))>0)next
+    inds.s<-which(j >= all.snp.s)
+    for(k in 1:length(inds.s)){
+      rn<-rownames(subset(cna.bed,chr==i)[inds.s,])
+      cna.bed[rn,]<-all.snp.bed[rn,]$state
+    }
+  }
+}
+
 write.table(cna.bed,file=paste0(path,outDir,"/",sample.name,"_gsrcCNVcall.bed"),
             quote=F,row.names=F,col.names=F)
