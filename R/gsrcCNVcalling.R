@@ -1,4 +1,11 @@
-#!/bin/bash
+#!/opt/R-3.3.1/bin/R
+
+#####INPUT#####
+#1. pennCNV input file name with full path
+#2. output directory
+########## 
+
+args <- commandArgs(TRUE)
 
 ##Install/load libraries
 #source("https://bioconductor.org/biocLite.R")
@@ -8,9 +15,19 @@ library(illuminaio)
 library(gsrc)
 
 ##load PennCNV input file
-filewpath<-"/Users/nickgiangreco/GitHub/Global_Screening_Arrays/files/pennTest2.txt"
-#filewpath<-args[1]
+#filewpath<-"/Users/nickgiangreco/GitHub/Global_Screening_Arrays/files/pennTest2.txt"
+files<-list.files(path=args[1],pattern="pennTest",full.names=T)
+filenames<-list.files(path=args[1],pattern="pennTest",full.names=F)
+for(f in 1:length(files)){
 
+#assigning file with full path
+filewpath<-files[f]
+
+#setting sample name from file name
+tmp<-filenames[f]
+sample.name<-unlist(strsplit(tmp,"\\."))[1]
+
+#reading file
 file.df<-read.table(filewpath,sep="\t",header=T)
 
 #making custom list to comply to
@@ -23,7 +40,6 @@ dat$chr<-file.df$Chr
 dat$pos<-file.df$Pos
 dat$baf<-file.df$BAF
 dat$rratio<-file.df$LRR
-sample.name<-"Sample.1"
 dat$samples<-sample.name
 dat$geno<-file.df$Gtype
 
@@ -36,13 +52,14 @@ dup<-0.1
 cnv.call<-cnv(seg,del=del,dup=dup) 
 
 #Output to bedgraph
-outDir<-"/files"
-#outDir<-args[2]
+#outDir<-"/files"
+outDir<-args[2]
 
 #Parsing output
 cna.bed<-data.frame("chr"=cnv.call$cna$chrom,"s"=cnv.call$cna$loc.start,"e"=cnv.call$cna$loc.end,
                "num.probes"=cnv.call$cna$num.mark,"avg.probe.val"=cnv.call$cna$seg.mean)
 all.snp.bed<-data.frame("chr"=cnv.call$chr,"s"=cnv.call$pos,"geno"=cnv.call$geno,"state"=cnv.call$cnv)
 
-write.table(cna.bed,file=paste0(path,outDir,"/",sample.name,"_gsrcCNVcall.bed"),
+write.table(cna.bed,file=paste0(outDir,"/",sample.name,"_gsrcCNVcall.bed"),
             quote=F,row.names=F,col.names=F)
+}
