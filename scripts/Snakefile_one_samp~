@@ -1,0 +1,21 @@
+#!/usr/bin/python
+
+
+
+##add your name below if you are editing this
+'''
+pipeline contributors:
+Eric Karlins
+
+
+This is to run a SnakeMake pipeline doing GWAS QC and generating several QC metrics files to return to give to the lab
+'''
+
+import glob
+import sys
+import os
+import shutil
+from snakemake.utils import R
+
+
+configfile: "config.yaml"
