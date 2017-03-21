@@ -24,7 +24,7 @@ for root, dirnames, filenames in os.walk(gtc_dir):
     for filename in fnmatch.filter(filenames, '*.gtc'):
         gtc = os.path.join(root, filename)
         sampId = filename[:-4]
-        sampleIds.append(sampId)
+        SAMPLE_IDS.append(sampId)
         sampIdToGtcDict[sampId] = gtc
         gtcFiles.append(gtc)
 
