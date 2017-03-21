@@ -13,9 +13,10 @@ import fnmatch
 from snakemake.utils import R
 
 
+
 configfile: "config.yaml"
 
-
+scriptDir = config['repo_scripts']
 gtc_dir = config['gtc_dir']
 gtcFiles = []
 SAMPLE_IDS = []
@@ -47,5 +48,5 @@ rule gtc2PennCNV:
     output:
         'PennCnvIn/{sample_id}.PennCNV_in.txt'
     shell:
-        'module load python/2.7.5;python gtc2PennCNV.py {input.gtc} {input.bpm} {output}'
+        'module load python/2.7.5;python ' + scriptDir + '/gtc2PennCNV.py {input.gtc} {input.bpm} {output}'
 

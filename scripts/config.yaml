@@ -1,2 +1,3 @@
 gtc_dir: /path/to/gtc/dir
 bpm: /path/to/manifest.bpm
+repo_scripts: /repo/scripts
