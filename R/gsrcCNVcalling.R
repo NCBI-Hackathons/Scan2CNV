@@ -27,10 +27,10 @@ sample.name<-"Sample.1"
 dat$samples<-sample.name
 dat$geno<-file.df$Gtype
 
-#call segments
+#call segments-makes cna
 seg<-segm(dat)
 
-#gsrc cnv calling
+#gsrc cnv calling-makes cnv
 del<- -0.1
 dup<-0.1
 cnv.call<-cnv(seg,del=del,dup=dup) 
@@ -38,6 +38,11 @@ cnv.call<-cnv(seg,del=del,dup=dup)
 #Output to bedgraph
 outDir<-"/files"
 #outDir<-args[2]
-bed<-cnv.call$cna[,c("chrom","loc.start","loc.end","num.mark","seg.mean")]
-write.table(bed,file=paste0(path,outDir,"/",sample.name,"_gsrcCNVcall.bed"),
+
+#Parsing output
+cna.bed<-data.frame("chr"=cnv.call$cna$chrom,"s"=cnv.call$cna$loc.start,"e"=cnv.call$cna$loc.end,
+               "num.probes"=cnv.call$cna$num.mark,"avg.probe.val"=cnv.call$cna$seg.mean)
+all.snp.bed<-data.frame("chr"=cnv.call$chr,"s"=cnv.call$pos,"geno"=cnv.call$geno,"state"=cnv.call$cnv)
+
+write.table(cna.bed,file=paste0(path,outDir,"/",sample.name,"_gsrcCNVcall.bed"),
             quote=F,row.names=F,col.names=F)
