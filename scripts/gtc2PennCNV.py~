@@ -37,7 +37,7 @@ def outputPennCnv(gtc_file, manifest_file, outFile):
                 geno = 'BB'
             else:
                 geno = '--'
-            output.write('\t'.join([name, chrom, map_info, geno, str(lrr), str(baf)]) + '\n')
+            output.write('\t'.join([name, chrom, str(map_info), geno, str(lrr), str(baf)]) + '\n')
 
 
 def main():
