@@ -60,7 +60,6 @@ cna.bed<-data.frame("chr"=cnv.call$cna$chrom,"s"=cnv.call$cna$loc.start,"e"=cnv.
                "num.probes"=cnv.call$cna$num.mark,"avg.probe.val"=cnv.call$cna$seg.mean)
 all.snp.bed<-data.frame("chr"=cnv.call$chr,"s"=cnv.call$pos,"geno"=cnv.call$geno,"state"=cnv.call$cnv)
 
-<<<<<<< HEAD
 chrs<-names(table(cna.bed$chr))
 cna.bed$state<-"NULL"
 
@@ -78,8 +77,5 @@ for(i in chrs){
 }
 
 write.table(cna.bed,file=paste0(path,outDir,"/",sample.name,"_gsrcCNVcall.bed"),
-=======
-write.table(cna.bed,file=paste0(outDir,"/",sample.name,"_gsrcCNVcall.bed"),
->>>>>>> 0f376adfcb578f250c6cd51c9530a097e4a30c56
             quote=F,row.names=F,col.names=F)
 }
