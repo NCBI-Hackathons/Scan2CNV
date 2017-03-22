@@ -38,7 +38,9 @@ def getGtc(wildcards):
 
 rule all:
     input:
-        expand('gsrc/{sample_id}.gsrc.bed', sample_id = SAMPLE_IDS)
+        expand('gsrc/{sample_id}.gsrc.bed', sample_id = SAMPLE_IDS),
+        expand('PennCnvOut/{sample_id}.PennCnvOut.txt', sample_id = SAMPLE_IDS)
+
 
 
 rule gtc2PennCNV:
@@ -97,4 +99,19 @@ rule gsrc2Cnv:
 
             write.table(cbind(cna.bed[,1:3], cna.bed[,6]),file = out_bed, quote=F, row.names=F,col.names=F)
 
-        ("""
+        """)
+
+
+
+rule pennCnv:
+    input:
+        'PennCnvIn/{sample_id}.PennCNV_in.txt'
+    output:
+        'PennCnvOut/{sample_id}.PennCnvOut.txt'
+    params:
+        hmm = config['hmm'],
+        pfb = config['pfb']
+    log:
+        'logs/{sample_id}.log'
+    shell:
+        'PennCNV/2015-v1.0.3;detect_cnv.pl -test -hmm {params.hmm} -pfb {params.pfb} -log {log} -out {output}'

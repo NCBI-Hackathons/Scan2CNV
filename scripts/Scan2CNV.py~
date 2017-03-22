@@ -35,7 +35,7 @@ def runQsub(qsubFile, proj, queue):
 
 
 
-def makeConfig(outDir, gtc_file_directory, bpm, scriptDir):
+def makeConfig(outDir, gtc_file_directory, bpm, project_name, hmm, scriptDir):
     '''
     (str, str, str) -> None
     '''
@@ -48,6 +48,8 @@ def makeConfig(outDir, gtc_file_directory, bpm, scriptDir):
         output.write('gtc_dir: ' + gtc_file_directory + '\n')
         output.write('output_dir: ' + outDir + '\n')
         output.write('bpm: ' + bpm + '\n')
+        output.write('hmm: ' + hmm + '\n')
+        output.write('project_name: ' + project_name + '\n')
         output.write('repo_scripts: ' + scriptDir + '\n')
         output.write('start_time: ' + start + '\n')
 
@@ -72,6 +74,7 @@ def get_args():
     requiredArgs.add_argument('-d', '--directory_for_output', type=str, required=True, help='REQUIRED. Full path to the base directory for the ArrayScan2CNV pipeline output')
     requiredArgs.add_argument('-b', '--bpm_file', type=str, required=True, help='REQUIRED. Full path to Illumina .bpm manifest file.')
     parser.add_argument('-p', '--pfb_file', type=str, help='Path to PennCNV PFB file.  REQUIRED for CNV calling.  Use -m option to create.')
+    parser.add_argument('-hmm', '--hmm', type=str, help='Path to PennCNV hmm file.  Should be included with PennCnv download.')
     parser.add_argument('-m', '--make_pfb', action='store_true', help='use flag to indicate to generate PFB file')
     parser.add_argument('-q', '--queue', type=str, default='all.q', help='OPTIONAL. Queue on cluster to use to submit jobs.  Defaults to all of the seq queues and all.q if not supplied.  default="all.q"')
     parser.add_argument('-u', '--unlock_snakemake', action='store_true', help='OPTIONAL. If pipeline was killed unexpectedly you may need this flag to rerun')
@@ -95,7 +98,7 @@ def main():
         shutil.copy2(scriptDir + '/Snakefile_ref_files', outDir + '/Snakefile')
     else:
         shutil.copy2(scriptDir + '/Snakefile_one_samp', outDir + '/Snakefile')
-    makeConfig(args.directory_for_output, args.path_to_gtc_directory, args.bpm_file, scriptDir)
+    makeConfig(args.directory_for_output, args.path_to_gtc_directory, args.bpm_file, args.name_of_project, args.hmm, scriptDir)
     qsubTxt = 'cd ' + outDir + '\n'
     qsubTxt += 'module load sge\n'
     qsubTxt += 'module load python3/3.5.1\n'
@@ -109,7 +112,7 @@ def main():
     qsubTxt += '-o ' + outDir + '/logs/ -e ' + outDir + '/logs/" --jobs 4000 --latency-wait 300\n'
     makeQsub(outDir + '/Scan2CNV.sh', qsubTxt)
     runQsub(outDir + '/Scan2CNV.sh', os.path.basename(outDir), args.queue)
-    print('ArrayScan2CNV Pipeline submitted.  You should receive an email when the pipeline starts and when it completes.')
+    print('Scan2CNV Pipeline submitted.  You should receive an email when the pipeline starts and when it completes.')
 
 
 if __name__ == "__main__":
