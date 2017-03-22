@@ -3,14 +3,17 @@
 
 ## Synopsis
 
-This program is designed to generate CNV calls from raw Microarray data using the command line.
+**This program is designed to generate CNV calls from raw SNP array data using the command line.**
+
+## Workflow
+
 
 ![alt text](https://github.com/NCBI-Hackathons/Global_Screening_Arrays/blob/master/files/Capture.PNG "Workflow")
 
 
 ## Installation
 
-1. Clone the repository 
+Clone the repository 
 ```
 git clone --recursive https://github.com/NCBI-Hackathons/Global_Screening_Arrays.git
 
