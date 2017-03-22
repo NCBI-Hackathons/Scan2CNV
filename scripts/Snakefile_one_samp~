@@ -38,7 +38,7 @@ def getGtc(wildcards):
 
 rule all:
     input:
-        expand('gsrc/{sample_id}.gsrc.bed', sample_id = SAMPLE_IDS),
+       # expand('gsrc/{sample_id}.gsrc.bed', sample_id = SAMPLE_IDS),
         expand('PennCnvOut/{sample_id}.PennCnvOut.txt', sample_id = SAMPLE_IDS)
 
 
@@ -114,4 +114,4 @@ rule pennCnv:
     log:
         'logs/{sample_id}.log'
     shell:
-        'PennCNV/2015-v1.0.3;detect_cnv.pl -test -hmm {params.hmm} -pfb {params.pfb} -log {log} -out {output}'
+        'module load PennCNV/2015-v1.0.3;detect_cnv.pl -test -hmm {params.hmm} -pfb {params.pfb} -log {log} -out {output}'
