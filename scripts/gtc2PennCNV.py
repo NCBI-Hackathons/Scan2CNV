@@ -29,7 +29,7 @@ def outputPennCnv(gtc_file, manifest_file, outFile):
     LRR = gtc.get_logr_ratios()
     BAF = gtc.get_ballele_freqs()
     with open(outFile, 'w') as output:
-        output.write('Name\tChr\tPos\tGtype\tLRR\tBAF\n')
+        output.write('Name\tChr\tPosition\tGtype\tLog R Ratio\tB Allele Freq\n')
         for (name, chrom, map_info, genotype, lrr, baf) in zip(manifest.names, manifest.chroms, manifest.map_infos, genotypes, LRR, BAF):
             if genotype == 1:
                 geno = 'AA'
