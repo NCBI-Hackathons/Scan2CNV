@@ -1,7 +1,7 @@
 # ArrayScan2CNV
 
 ## Synopsis
-This program is designed to generate CNV calls from raw Array data using the command line.
+This program is designed to generate CNV calls from raw Microarray data using the command line.
 
 ![alt text](https://github.com/NCBI-Hackathons/Global_Screening_Arrays/blob/master/Workflow.PNG "Workflow")
 
