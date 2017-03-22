@@ -1,0 +1,66 @@
+#!/usr/bin/python
+
+
+'''
+SnakeMake pipeline to run ArrayScan2CNV
+'''
+
+import glob
+import sys
+import os
+import shutil
+import fnmatch
+from snakemake.utils import R
+
+
+
+configfile: "config.yaml"
+
+scriptDir = config['repo_scripts']
+gtc_dir = config['gtc_dir']
+proj = config['project_name']
+gtcFiles = []
+SAMPLE_IDS = []
+sampIdToGtcDict = {}
+for root, dirnames, filenames in os.walk(gtc_dir):
+    for filename in fnmatch.filter(filenames, '*.gtc'):
+        gtc = os.path.join(root, filename)
+        sampId = filename[:-4]
+        SAMPLE_IDS.append(sampId)
+        sampIdToGtcDict[sampId] = gtc
+        gtcFiles.append(gtc)
+
+
+
+def getGtc(wildcards):
+    sampId = wildcards.sample_id
+    return sampIdToGtcDict[sampId]
+
+
+rule all:
+    input:
+        'PFB/' + proj + '.pfb'
+
+
+rule gtc2PennCNV:
+    input:
+        gtc = getGtc,
+        bpm = config['bpm']
+    output:
+        'PennCnvIn/{sample_id}.PennCNV_in.txt'
+    shell:
+        'module load python/2.7.5;python ' + scriptDir + '/gtc2PennCNV.py {input.gtc} {input.bpm} {output}'
+
+rule makePFB:
+    input:
+        expand('PennCnvIn/{sample_id}.PennCNV_in.txt', sample_id = SAMPLE_IDS)
+    output:
+        file_list = 'PFB/listFiles.txt',
+        pfb = 'PFB/' + proj + '.pfb'
+    run:
+        with open(output.file_list, 'w') as out:
+            for i in input:
+                output.write(i + '\n')
+        shell('module load module load PennCNV/2015-v1.0.3;compile_pfb.pl --listfile {output.file_list} --output {output.pfb}')
+
+
