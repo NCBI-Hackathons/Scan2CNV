@@ -67,13 +67,13 @@ def get_args():
     '''
     parser = argparse.ArgumentParser()
     requiredArgs = parser.add_argument_group('Required Arguments')
-    requiredArgs.add_argument('n', '--name_of_project', type=str, required=True, help='Name to give to project for some output files')
+    requiredArgs.add_argument('-n', '--name_of_project', type=str, required=True, help='Name to give to project for some output files')
     requiredArgs.add_argument('-g', '--path_to_gtc_directory', type=str, required=True, help='Full path to directory containing gtc files.  It will do a recursive search for gtc files.')
     requiredArgs.add_argument('-d', '--directory_for_output', type=str, required=True, help='REQUIRED. Full path to the base directory for the ArrayScan2CNV pipeline output')
     requiredArgs.add_argument('-b', '--bpm_file', type=str, required=True, help='REQUIRED. Full path to Illumina .bpm manifest file.')
     parser.add_argument('-p', '--pfb_file', type=str, help='Path to PennCNV PFB file.  REQUIRED for CNV calling.  Use -m option to create.')
     parser.add_argument('-m', '--make_pfb', action='store_true', help='use flag to indicate to generate PFB file')
-    parser.add_argument('-q', '--queue', type=str, default='all.q', help='OPTIONAL. Queue on cgemsiii to use to submit jobs.  Defaults to all of the seq queues and all.q if not supplied.  default="all.q"')
+    parser.add_argument('-q', '--queue', type=str, default='all.q', help='OPTIONAL. Queue on cluster to use to submit jobs.  Defaults to all of the seq queues and all.q if not supplied.  default="all.q"')
     args = parser.parse_args()
     return args
 
