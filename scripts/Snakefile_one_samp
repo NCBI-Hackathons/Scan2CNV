@@ -50,3 +50,12 @@ rule gtc2PennCNV:
     shell:
         'module load python/2.7.5;python ' + scriptDir + '/gtc2PennCNV.py {input.gtc} {input.bpm} {output}'
 
+
+
+rule gsrc2Cnv:
+    input:
+        'PennCnvIn/{sample_id}.PennCNV_in.txt'
+    output:
+        'gsrc/{sample_id}.gsrc.bed'
+    run:
+        
