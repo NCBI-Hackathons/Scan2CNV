@@ -39,8 +39,8 @@ dat<-list("snps" = c(),"chr" = c(), "pos" = c(), "baf" = c(), "rratio" = c(), "s
 dat$snps<-file.df$Name
 dat$chr<-file.df$Chr
 dat$pos<-file.df$Position
-dat$baf<-file.df$B.Allele.Freq
-dat$rratio<-file.df$Log.R.Ratio
+dat$baf<-matrix(file.df$B.Allele.Freq)
+dat$rratio<-matrix(file.df$Log.R.Ratio)
 dat$samples<-sample.name
 dat$geno<-file.df$Gtype
 
