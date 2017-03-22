@@ -60,7 +60,7 @@ rule makePFB:
     run:
         with open(output.file_list, 'w') as out:
             for i in input:
-                output.write(i + '\n')
+                out.write(i + '\n')
         shell('module load module load PennCNV/2015-v1.0.3;compile_pfb.pl --listfile {output.file_list} --output {output.pfb}')
 
 
