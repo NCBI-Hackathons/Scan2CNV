@@ -74,6 +74,7 @@ def get_args():
     parser.add_argument('-p', '--pfb_file', type=str, help='Path to PennCNV PFB file.  REQUIRED for CNV calling.  Use -m option to create.')
     parser.add_argument('-m', '--make_pfb', action='store_true', help='use flag to indicate to generate PFB file')
     parser.add_argument('-q', '--queue', type=str, default='all.q', help='OPTIONAL. Queue on cluster to use to submit jobs.  Defaults to all of the seq queues and all.q if not supplied.  default="all.q"')
+    parser.add_argument('-u', '--unlock_snakemake', action='store_true', help='OPTIONAL. If pipeline was killed unexpectedly you may need this flag to rerun')
     args = parser.parse_args()
     return args
 
