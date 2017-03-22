@@ -39,7 +39,7 @@ def getGtc(wildcards):
 rule all:
     input:
         expand('gsrc/{sample_id}.gsrc.bed', sample_id = SAMPLE_IDS),
-        expand('gsrc/{sample_id}.gsrc.bed', sample_id = SAMPLE_IDS)
+        expand('PennCnvOut/{sample_id}.PennCnvOut.txt', sample_id = SAMPLE_IDS)
 
 
 
