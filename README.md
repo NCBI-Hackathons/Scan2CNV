@@ -10,7 +10,7 @@ This program is designed to generate CNV calls from raw Microarray data using th
 
 1. Clone the repository 
 ```
-git clone https://github.com/Illumina/BeadArrayFiles
+git clone --recursive https://github.com/NCBI-Hackathons/Global_Screening_Arrays.git
 
 ```
 
