@@ -1,4 +1,4 @@
-# ArrayScan2CNV
+# Scan2CNV
 
 ## Synopsis
 This program is designed to generate CNV calls from raw Microarray data using the command line.
@@ -14,10 +14,6 @@ git clone --recursive https://github.com/NCBI-Hackathons/Global_Screening_Arrays
 
 ```
 
-```
-Install code here.
-
-```
 
 ## Usage
 ```
@@ -50,13 +46,10 @@ Required Arguments:
                         REQUIRED. Full path to Illumina .bpm manifest file.
 ```
 
-```
-No language indicated, no syntax highlighting. Insert other code here.
 
-```
 ## Dependencies
 
-**R packages:** gsrc v
+**R packages:** gsrc v1.1
 
 **Python modules:** PennCNV v1.0.3
 
