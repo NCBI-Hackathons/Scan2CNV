@@ -58,7 +58,7 @@ No language indicated, no syntax highlighting. Insert other code here.
 
 Package | Version
 --- | ---
-PennCNV |
+PennCNV | v1.0.3
 gsrc |
 
   
