@@ -115,4 +115,4 @@ rule pennCnv:
     log:
         'logs/{sample_id}.log'
     shell:
-        'module load PennCNV/2015-v1.0.3;detect_cnv.pl -test -hmm {params.hmm} -pfb {params.pfb} -log {log} -out {output}'
+        'module load PennCNV/2015-v1.0.3;detect_cnv.pl -test -hmm {params.hmm} -pfb {params.pfb} {input} -log {log} -out {output}'
