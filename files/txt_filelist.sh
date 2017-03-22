@@ -1,0 +1,1 @@
+find /CGF/Bioinformatics/Production/Eric/Projects/NcbiHackathonMar2017/SnakeTest2/PennCnvIn -ls > filelist.txt
