@@ -1,21 +1,63 @@
 #!/usr/bin/python
 
 
-
-##add your name below if you are editing this
 '''
-pipeline contributors:
-Eric Karlins
-
-
-This is to run a SnakeMake pipeline doing GWAS QC and generating several QC metrics files to return to give to the lab
+SnakeMake pipeline to run ArrayScan2CNV
 '''
 
 import glob
 import sys
 import os
 import shutil
+import fnmatch
 from snakemake.utils import R
 
 
+
 configfile: "config.yaml"
+
+scriptDir = config['repo_scripts']
+gtc_dir = config['gtc_dir']
+gtcFiles = []
+SAMPLE_IDS = []
+sampIdToGtcDict = {}
+for root, dirnames, filenames in os.walk(gtc_dir):
+    for filename in fnmatch.filter(filenames, '*.gtc'):
+        gtc = os.path.join(root, filename)
+        sampId = filename[:-4]
+        SAMPLE_IDS.append(sampId)
+        sampIdToGtcDict[sampId] = gtc
+        gtcFiles.append(gtc)
+
+
+
+def getGtc(wildcards):
+    sampId = wildcards.sample_id
+    return sampIdToGtcDict[sampId]
+
+
+rule all:
+    input:
+        expand('PennCnvIn/{sample_id}.PennCNV_in.txt', sample_id = SAMPLE_IDS)
+
+
+rule gtc2PennCNV:
+    input:
+        gtc = getGtc,
+        bpm = config['bpm']
+    output:
+        'PennCnvIn/{sample_id}.PennCNV_in.txt'
+    shell:
+        'module load python/2.7.5;python ' + scriptDir + '/gtc2PennCNV.py {input.gtc} {input.bpm} {output}'
+
+
+
+rule gsrc2Cnv:
+    input:
+        'PennCnvIn/{sample_id}.PennCNV_in.txt'
+    output:
+        'gsrc/{sample_id}.gsrc.bed'
+    run:
+        R("""
+                
+        ("""

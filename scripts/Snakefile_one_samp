@@ -58,4 +58,7 @@ rule gsrc2Cnv:
     output:
         'gsrc/{sample_id}.gsrc.bed'
     run:
-        
+        R("""
+            
+                
+        ("""
