@@ -1,24 +1,39 @@
 # ArrayScan2CNV
 
 ## Synopsis
-This program is designed to take raw idat files and generate CNV calls. Using the egt file created from Genome Studio and the specific bpm file, this becomes a simple command line solution for CNV calling on array data.
+This program is designed to generate CNV calls from raw Array data using the command line.
 
 [Workflow](https://www.gliffy.com/go/publish/11884987)
 
-## Motivation
-Creating an easy command line solution for cnv calling from idat files.
 
 ## Installation
 
+1. Clone the repository 
+```
+git clone https://github.com/Illumina/BeadArrayFiles
 
-## API Reference
+```
 
+```
+ Install code here.
 
+```
+
+## Usage
+```python
+s = "Python syntax highlighting, insert python code here"
+print s
+```
+
+```
+No language indicated, no syntax highlighting. Insert other code here.
+
+```
 ## Dependencies
 
+Package | Version
+--- | ---
+PennCNV |
+gsrc |
 
-## Tests
-
-
-## Credits
-
+  
