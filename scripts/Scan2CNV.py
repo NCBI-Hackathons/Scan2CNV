@@ -35,7 +35,7 @@ def runQsub(qsubFile, proj, queue):
 
 
 
-def makeConfig(outDir, gtc_file_directory, bpm, scriptDir):
+def makeConfig(outDir, gtc_file_directory, bpm, project_name, scriptDir):
     '''
     (str, str, str) -> None
     '''
@@ -48,6 +48,7 @@ def makeConfig(outDir, gtc_file_directory, bpm, scriptDir):
         output.write('gtc_dir: ' + gtc_file_directory + '\n')
         output.write('output_dir: ' + outDir + '\n')
         output.write('bpm: ' + bpm + '\n')
+        output.write('project_name: ' + project_name + '\n')
         output.write('repo_scripts: ' + scriptDir + '\n')
         output.write('start_time: ' + start + '\n')
 
@@ -95,7 +96,7 @@ def main():
         shutil.copy2(scriptDir + '/Snakefile_ref_files', outDir + '/Snakefile')
     else:
         shutil.copy2(scriptDir + '/Snakefile_one_samp', outDir + '/Snakefile')
-    makeConfig(args.directory_for_output, args.path_to_gtc_directory, args.bpm_file, scriptDir)
+    makeConfig(args.directory_for_output, args.path_to_gtc_directory, args.bpm_file, args.name_of_project, scriptDir)
     qsubTxt = 'cd ' + outDir + '\n'
     qsubTxt += 'module load sge\n'
     qsubTxt += 'module load python3/3.5.1\n'
@@ -109,7 +110,7 @@ def main():
     qsubTxt += '-o ' + outDir + '/logs/ -e ' + outDir + '/logs/" --jobs 4000 --latency-wait 300\n'
     makeQsub(outDir + '/Scan2CNV.sh', qsubTxt)
     runQsub(outDir + '/Scan2CNV.sh', os.path.basename(outDir), args.queue)
-    print('ArrayScan2CNV Pipeline submitted.  You should receive an email when the pipeline starts and when it completes.')
+    print('Scan2CNV Pipeline submitted.  You should receive an email when the pipeline starts and when it completes.')
 
 
 if __name__ == "__main__":
