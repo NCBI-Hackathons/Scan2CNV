@@ -38,7 +38,10 @@ def getGtc(wildcards):
 
 rule all:
     input:
-        expand('PennCnvIn/{sample_id}.PennCNV_in.txt', sample_id = SAMPLE_IDS)
+        expand('gsrc/{sample_id}.gsrc.bed', sample_id = SAMPLE_IDS),
+        expand('PennCnvOut/{sample_id}.PennCnvOut.txt', sample_id = SAMPLE_IDS),
+        expand('PennCnvBed/{sample_id}.PennCnvOut.bed', sample_id = SAMPLE_IDS)
+
 
 
 rule gtc2PennCNV:
@@ -50,3 +53,38 @@ rule gtc2PennCNV:
     shell:
         'module load python/2.7.5;python ' + scriptDir + '/gtc2PennCNV.py {input.gtc} {input.bpm} {output}'
 
+
+
+rule gsrc2Cnv:
+    input:
+        'PennCnvIn/{sample_id}.PennCNV_in.txt'
+    output:
+        txt = 'gsrc/{sample_id}.gsrc.txt',
+        bed = 'gsrc/{sample_id}.gsrc.bed'
+    shell:
+        'module load R/3.3.0;Rscript ' + scriptDir + '/../R/gsrcCNVcalling.R {input} {output.txt} {output.bed}'
+
+
+
+rule pennCnv:
+    input:
+        'PennCnvIn/{sample_id}.PennCNV_in.txt'
+    output:
+        'PennCnvOut/{sample_id}.PennCnvOut.txt'
+    params:
+        hmm = config['hmm'],
+        pfb = config['pfb']
+    log:
+        'logs/{sample_id}.log'
+    shell:
+        'module load PennCNV/2015-v1.0.3;detect_cnv.pl -test -hmm {params.hmm} -pfb {params.pfb} {input} -log {log} -out {output}'
+
+rule pennCnvBed:
+    input:
+        'PennCnvOut/{sample_id}.PennCnvOut.txt'
+    output:
+        'PennCnvBed/{sample_id}.PennCnvOut.bed'
+    params:
+        track = 'CNVs in {sample_id}'
+    shell:
+        'module load PennCNV/2015-v1.0.3;visualize_cnv.pl {input} -format bed -track "{params.track}" > {output}'

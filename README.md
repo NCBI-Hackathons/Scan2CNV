@@ -1,41 +1,47 @@
-# ArrayScan2CNV
+## ![alt text](https://github.com/NCBI-Hackathons/Global_Screening_Arrays/blob/master/files/Logo.png "Logo")
+
 
 ## Synopsis
-This program is designed to generate CNV calls from raw Microarray data using the command line.
 
-![alt text](https://github.com/NCBI-Hackathons/Global_Screening_Arrays/blob/master/Workflow.PNG "Workflow")
+**This program is designed to generate CNV calls from raw SNP array data using the command line.**
+
+## Workflow
+
+
+![alt text](https://github.com/NCBI-Hackathons/Global_Screening_Arrays/blob/master/files/Capture.PNG "Workflow")
 
 
 ## Installation
 
-1. Clone the repository 
+Clone the repository 
 ```
 git clone --recursive https://github.com/NCBI-Hackathons/Global_Screening_Arrays.git
 
 ```
 
-```
- Install code here.
-
-```
 
 ## Usage
 ```
-./ArrayScan2CNV.py -h
-usage: ArrayScan2CNV.py [-h] -n NAME_OF_PROJECT -g PATH_TO_GTC_DIRECTORY -d
-                        DIRECTORY_FOR_OUTPUT -b BPM_FILE [-p PFB_FILE] [-m]
-                        [-q QUEUE]
+./Scan2CNV.py -h
+usage: Scan2CNV.py [-h] -n NAME_OF_PROJECT -g PATH_TO_GTC_DIRECTORY -d
+                   DIRECTORY_FOR_OUTPUT -b BPM_FILE [-p PFB_FILE] [-hmm HMM]
+                   [-m] [-q QUEUE] [-u]
 
 optional arguments:
   -h, --help            show this help message and exit
   -p PFB_FILE, --pfb_file PFB_FILE
                         Path to PennCNV PFB file. REQUIRED for CNV calling.
                         Use -m option to create.
+  -hmm HMM, --hmm HMM   Path to PennCNV hmm file. Should be included with
+                        PennCnv download.
   -m, --make_pfb        use flag to indicate to generate PFB file
   -q QUEUE, --queue QUEUE
-                        OPTIONAL. Queue on cgemsiii to use to submit jobs.
+                        OPTIONAL. Queue on cluster to use to submit jobs.
                         Defaults to all of the seq queues and all.q if not
                         supplied. default="all.q"
+  -u, --unlock_snakemake
+                        OPTIONAL. If pipeline was killed unexpectedly you may
+                        need this flag to rerun
 
 Required Arguments:
   -n NAME_OF_PROJECT, --name_of_project NAME_OF_PROJECT
@@ -50,15 +56,12 @@ Required Arguments:
                         REQUIRED. Full path to Illumina .bpm manifest file.
 ```
 
-```
-No language indicated, no syntax highlighting. Insert other code here.
 
-```
 ## Dependencies
 
-Package | Version
---- | ---
-PennCNV | v1.0.3
-gsrc |
+**R packages:** gsrc v1.1
 
+**Python modules:** PennCNV v1.0.3
+
+**Software:** python v2.7.5, R v3.3.1
   
