@@ -59,26 +59,35 @@ outDir<-args[2]
 #Making data frames
 cna.bed<-data.frame("chr"=cnv.call$cna$chrom,"s"=cnv.call$cna$loc.start,"e"=cnv.call$cna$loc.end,
                "num.probes"=cnv.call$cna$num.mark,"avg.probe.val"=cnv.call$cna$seg.mean)
-all.snp.bed<-data.frame("chr"=cnv.call$chr,"s"=cnv.call$pos,"geno"=cnv.call$geno,"state"=cnv.call$cnv)
+#all.snp.bed<-data.frame("chr"=cnv.call$chr,"s"=cnv.call$pos,"geno"=cnv.call$geno,"state"=cnv.call$cnv)
 
 #assigning cnv state from individual probes to regions
-chrs<-names(table(cna.bed$chr))
+# chrs<-names(table(cna.bed$chr))
+# cna.bed$state<-"NULL"
+# for(i in chrs){
+#   #cat("\n",i)
+#   #get regions and probes in chromosome
+#   sub.cna.bed<-subset(cna.bed,chr==i)
+#   st<-sub.cna.bed$s
+#   en<-sub.cna.bed$e
+#   #cat("\n\t",length(st))
+#   #then looping for each cna start
+#   for(j in 1:length(st)){
+#     rn<-rownames(subset(sub.cna.bed, chr==i & s==s[j]))
+#     states<-subset(all.snp.bed, chr==i & s >= st[j] & s <= en[j])$state
+#     if(mean(states)%%1==0 | length(states)==0){
+#       cna.bed[rn,"state"]<-0}else{
+#         cna.bed[rn,"state"]<-states[1]}
+#   }
+# }
+#OR
 cna.bed$state<-"NULL"
-for(i in chrs){
-  #cat("\n",i)
-  #get regions and probes in chromosome
-  sub.cna.bed<-subset(cna.bed,chr==i)
-  st<-sub.cna.bed$s
-  en<-sub.cna.bed$e
-  #cat("\n\t",length(st))
-  #then looping for each cna start
-  for(j in 1:length(st)){
-    rn<-rownames(subset(sub.cna.bed, chr==i & s==s[j]))
-    states<-subset(all.snp.bed, chr==i & s >= st[j] & s <= en[j])$state
-    if(mean(states)%%1==0 | length(states)==0){
-      cna.bed[rn,"state"]<-0}else{
-        cna.bed[rn,"state"]<-states[1]}
-  }
+del<- -0.1
+dup<-0.1
+for(i in 1:nrow(cna.bed)){
+  valtmp<-cna.bed[i,"avg.probe.val"]
+  val<-ifelse(valtmp<del,-1,ifelse(valtmp>dup,1,0))
+  cna.bed[i,"state"]<-val
 }
 
 #Output
