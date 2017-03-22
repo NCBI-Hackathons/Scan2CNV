@@ -8,7 +8,7 @@
 ## Workflow
 
 
-![alt text](https://github.com/NCBI-Hackathons/Global_Screening_Arrays/blob/master/files/Capture.PNG "Workflow")
+![alt text](https://github.com/NCBI-Hackathons/Global_Screening_Arrays/blob/master/files/Workflow_updated.PNG "Workflow")
 
 
 ## Installation
