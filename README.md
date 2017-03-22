@@ -19,25 +19,28 @@ git clone --recursive https://github.com/NCBI-Hackathons/Global_Screening_Arrays
 
 ## Usage
 ```
-./ArrayScan2CNV.py -h
-usage: ArrayScan2CNV.py [-h] -n NAME_OF_PROJECT -g PATH_TO_GTC_DIRECTORY -d
-                        DIRECTORY_FOR_OUTPUT -b BPM_FILE [-p PFB_FILE] [-m]
-                        [-q QUEUE]
+./Scan2CNV.py -h
+usage: Scan2CNV.py [-h] -n NAME_OF_PROJECT -g PATH_TO_GTC_DIRECTORY -d
+                   DIRECTORY_FOR_OUTPUT -b BPM_FILE [-p PFB_FILE] [-hmm HMM]
+                   [-m] [-q QUEUE] [-u]
 
 optional arguments:
   -h, --help            show this help message and exit
-  -q QUEUE, --queue QUEUE
-                        OPTIONAL. Queue on cgemsiii to use to submit jobs.
-                        Defaults to all of the seq queues and all.q if not
-                        supplied. default="all.q"
-                        
-Required Arguments (only 1):
   -p PFB_FILE, --pfb_file PFB_FILE
                         Path to PennCNV PFB file. REQUIRED for CNV calling.
                         Use -m option to create.
+  -hmm HMM, --hmm HMM   Path to PennCNV hmm file. Should be included with
+                        PennCnv download.
   -m, --make_pfb        use flag to indicate to generate PFB file
+  -q QUEUE, --queue QUEUE
+                        OPTIONAL. Queue on cluster to use to submit jobs.
+                        Defaults to all of the seq queues and all.q if not
+                        supplied. default="all.q"
+  -u, --unlock_snakemake
+                        OPTIONAL. If pipeline was killed unexpectedly you may
+                        need this flag to rerun
 
-Required Arguments (All):
+Required Arguments:
   -n NAME_OF_PROJECT, --name_of_project NAME_OF_PROJECT
                         Name to give to project for some output files
   -g PATH_TO_GTC_DIRECTORY, --path_to_gtc_directory PATH_TO_GTC_DIRECTORY
