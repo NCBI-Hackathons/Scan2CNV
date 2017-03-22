@@ -55,5 +55,5 @@ Required Arguments:
 
 **Python modules:** PennCNV v1.0.3
 
-**Software:**
+**Software:** python v2.7.5, R
   
