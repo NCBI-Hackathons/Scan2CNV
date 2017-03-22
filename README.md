@@ -3,7 +3,7 @@
 ## Synopsis
 This program is designed to generate CNV calls from raw Microarray data using the command line.
 
-![alt text](https://github.com/NCBI-Hackathons/Global_Screening_Arrays/blob/master/Workflow.PNG "Workflow")
+![alt text](https://github.com/NCBI-Hackathons/Global_Screening_Arrays/blob/master/Workflow_updated.PNG "Workflow")
 
 
 ## Installation
@@ -15,7 +15,7 @@ git clone --recursive https://github.com/NCBI-Hackathons/Global_Screening_Arrays
 ```
 
 ```
- Install code here.
+Install code here.
 
 ```
 
@@ -56,9 +56,9 @@ No language indicated, no syntax highlighting. Insert other code here.
 ```
 ## Dependencies
 
-Package | Version
---- | ---
-PennCNV | v1.0.3
-gsrc |
+**R packages:** gsrc v
 
+**Python modules:** PennCNV v1.0.3
+
+**Software:**
   
