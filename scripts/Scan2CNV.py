@@ -28,7 +28,7 @@ def runQsub(qsubFile, proj, queue):
     '''
     qsubHeader = qsubFile[:-3]
     user = subprocess.check_output('whoami').rstrip('\n')
-    qsubCall = ['qsub', '-M', user + '@mail.nih.gov', '-m', 'beas', '-q', queue, '-o', qsubHeader + '.stdout', '-e', qsubHeader + '.stderr', '-N', 'GwasQC.' + proj, '-S', '/bin/sh', qsubFile]
+    qsubCall = ['qsub', '-M', user + '@mail.nih.gov', '-m', 'beas', '-q', queue, '-o', qsubHeader + '.stdout', '-e', qsubHeader + '.stderr', '-N', 'Scan2CNV.' + proj, '-S', '/bin/sh', qsubFile]
     retcode = subprocess.call(qsubCall)
 
 
@@ -107,8 +107,8 @@ def main():
         qsubTxt += 'snakemake --unlock\n'
     qsubTxt += 'snakemake --rerun-incomplete --cluster "qsub -q ' + args.queue + ' -pe by_node {threads} '
     qsubTxt += '-o ' + outDir + '/logs/ -e ' + outDir + '/logs/" --jobs 4000 --latency-wait 300\n'
-    makeQsub(outDir + '/GwasQcPipeline.sh', qsubTxt)
-    runQsub(outDir + '/GwasQcPipeline.sh', os.path.basename(outDir), 'seq-alignment.q,seq-calling.q,seq-calling2.q,seq-gvcf.q,research.q')
+    makeQsub(outDir + '/Scan2CNV.sh', qsubTxt)
+    runQsub(outDir + '/Scan2CNV.sh', os.path.basename(outDir), args.queue)
     print('ArrayScan2CNV Pipeline submitted.  You should receive an email when the pipeline starts and when it completes.')
 
 
