@@ -3,7 +3,7 @@
 ## Synopsis
 This program is designed to generate CNV calls from raw Array data using the command line.
 
-[Workflow](https://www.gliffy.com/go/publish/11884987)
+![alt text](https://github.com/NCBI-Hackathons/Global_Screening_Arrays/blob/master/Workflow.PNG "Workflow")
 
 
 ## Installation
