@@ -1,13 +1,13 @@
-#!/bin/bash
+#!/usr/bin/Rscript
+
+##allow reading of args
+args <- commandArgs(TRUE)
 
 #cat("\nstart")
 
 #libraries
 library(gsrc)
 library(ggplot2)
-
-#allow reading of args
-args <- commandArgs(TRUE)
 
 #read args
 file<-args[1]
