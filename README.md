@@ -1,6 +1,8 @@
-# Scan2CNV
+## ![alt text](https://github.com/NCBI-Hackathons/Global_Screening_Arrays/blob/master/files/Logo.png "Logo")
+
 
 ## Synopsis
+
 This program is designed to generate CNV calls from raw Microarray data using the command line.
 
 ![alt text](https://github.com/NCBI-Hackathons/Global_Screening_Arrays/blob/master/Workflow_updated.PNG "Workflow")
