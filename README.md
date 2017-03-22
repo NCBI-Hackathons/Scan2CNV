@@ -20,7 +20,7 @@ git clone --recursive https://github.com/NCBI-Hackathons/Global_Screening_Arrays
 ```
 
 ## Usage
-```python
+```
 ./ArrayScan2CNV.py -h
 usage: ArrayScan2CNV.py [-h] -n NAME_OF_PROJECT -g PATH_TO_GTC_DIRECTORY -d
                         DIRECTORY_FOR_OUTPUT -b BPM_FILE [-p PFB_FILE] [-m]
