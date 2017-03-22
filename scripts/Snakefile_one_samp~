@@ -59,5 +59,39 @@ rule gsrc2Cnv:
         'gsrc/{sample_id}.gsrc.bed'
     run:
         R("""
-                
+            library(illuminaio)
+            library(gsrc)
+            filewpath <- "{input}"
+            out_bed <- "{output}"
+            sample.name<-unlist(strsplit(filewpath,"\\."))[1]
+            file.df<-read.delim(filewpath,sep="\t",header=T)
+            dat<-list("snps" = c(),"chr" = c(), "pos" = c(), "baf" = c(), "rratio" = c(), "samples" = c(), "geno" = c())
+            dat$snps<-file.df$Name
+            dat$chr<-file.df$Chr
+            dat$pos<-file.df$Position
+            dat$baf<-file.df$B.Allele.Freq
+            dat$rratio<-file.df$Log.R.Ratio
+            dat$samples<-sample.name
+            dat$geno<-file.df$Gtype
+
+            #call segments-makes cna
+            seg<-segm(dat)
+
+            #gsrc cnv calling-makes cnv
+            del<- -0.1
+            dup<-0.1
+            cnv.call<-cnv(seg,del=del,dup=dup)
+            cna.bed<-data.frame("chr"=cnv.call$cna$chrom,"s"=cnv.call$cna$loc.start,"e"=cnv.call$cna$loc.end,
+               "num.probes"=cnv.call$cna$num.mark,"avg.probe.val"=cnv.call$cna$seg.mean)
+            cna.bed$state<-"NULL"
+            del<- -0.1
+            dup<-0.1
+            for(i in 1:nrow(cna.bed)){
+                valtmp<-cna.bed[i,"avg.probe.val"]
+                val<-ifelse(valtmp<del,-1,ifelse(valtmp>dup,1,0))
+                cna.bed[i,"state"]<-val
+            }
+
+            write.table(cna.bed,file = out_bed, quote=F,row.names=F,col.names=F)
+
         ("""
