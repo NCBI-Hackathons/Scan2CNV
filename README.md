@@ -5,7 +5,7 @@
 
 This program is designed to generate CNV calls from raw Microarray data using the command line.
 
-![alt text](https://github.com/NCBI-Hackathons/Global_Screening_Arrays/blob/master/Workflow_updated.PNG "Workflow")
+![alt text](https://github.com/NCBI-Hackathons/Global_Screening_Arrays/blob/master/files/Capture.PNG "Workflow")
 
 
 ## Installation
@@ -26,16 +26,18 @@ usage: ArrayScan2CNV.py [-h] -n NAME_OF_PROJECT -g PATH_TO_GTC_DIRECTORY -d
 
 optional arguments:
   -h, --help            show this help message and exit
-  -p PFB_FILE, --pfb_file PFB_FILE
-                        Path to PennCNV PFB file. REQUIRED for CNV calling.
-                        Use -m option to create.
-  -m, --make_pfb        use flag to indicate to generate PFB file
   -q QUEUE, --queue QUEUE
                         OPTIONAL. Queue on cgemsiii to use to submit jobs.
                         Defaults to all of the seq queues and all.q if not
                         supplied. default="all.q"
+                        
+Required Arguments (only 1):
+  -p PFB_FILE, --pfb_file PFB_FILE
+                        Path to PennCNV PFB file. REQUIRED for CNV calling.
+                        Use -m option to create.
+  -m, --make_pfb        use flag to indicate to generate PFB file
 
-Required Arguments:
+Required Arguments (All):
   -n NAME_OF_PROJECT, --name_of_project NAME_OF_PROJECT
                         Name to give to project for some output files
   -g PATH_TO_GTC_DIRECTORY, --path_to_gtc_directory PATH_TO_GTC_DIRECTORY
