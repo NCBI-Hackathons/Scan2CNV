@@ -56,6 +56,6 @@ for(i in 1:nrow(cna.bed)){
 }
 
 #Output
-write.table(cna.bed, file = out_txt, quote=F, row.names=F, col.names=T, sep = "\t")
-write.table(cbind(cna.bed[,1:3], cna.bed[,6]),file = out_bed, quote=F, row.names=F,col.names=F, sep = "\t")
+write.table(cna.bed, file = out_txt, quote=F, row.names=F, col.names=T)
+write.table(cbind(cna.bed[,1:3], cna.bed[,6]),file = out_bed, quote=F, row.names=F,col.names=F)
 
