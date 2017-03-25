@@ -48,7 +48,8 @@ def makeConfig(outDir, gtc_file_directory, bpm, project_name, pfb, hmm, scriptDi
         output.write('gtc_dir: ' + gtc_file_directory + '\n')
         output.write('output_dir: ' + outDir + '\n')
         output.write('bpm: ' + bpm + '\n')
-        output.write('pfb: ' + pfb + '\n')
+        if pfb:
+            output.write('pfb: ' + pfb + '\n')
         output.write('hmm: ' + hmm + '\n')
         output.write('project_name: ' + project_name + '\n')
         output.write('repo_scripts: ' + scriptDir + '\n')
@@ -89,6 +90,14 @@ def main():
     scriptDir = os.path.dirname(os.path.abspath(__file__))
     args = get_args()
     outDir = args.directory_for_output
+    if not args.pfb_file:
+        pfb = ''
+    else:
+        pfb = args.pfb_file
+    if not args.hmm:
+        hmm = ''
+    else:
+        hmm = args.hmm
     if outDir[0] != '/':
         print('-d argument must be full path to working directory.  Relative paths will not work.')
         sys.exit(1)
@@ -99,7 +108,7 @@ def main():
         shutil.copy2(scriptDir + '/Snakefile_ref_files', outDir + '/Snakefile')
     else:
         shutil.copy2(scriptDir + '/Snakefile_one_samp', outDir + '/Snakefile')
-    makeConfig(args.directory_for_output, args.path_to_gtc_directory, args.bpm_file, args.name_of_project, args.pfb_file, args.hmm, scriptDir)
+    makeConfig(args.directory_for_output, args.path_to_gtc_directory, args.bpm_file, args.name_of_project, pfb, hmm, scriptDir)
     qsubTxt = 'cd ' + outDir + '\n'
     qsubTxt += 'module load sge\n'
     qsubTxt += 'module load python3/3.5.1\n'
