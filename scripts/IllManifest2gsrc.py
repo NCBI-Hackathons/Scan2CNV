@@ -12,9 +12,9 @@ def outputGsrc(manifest, outDict, outChrPos):
         output1.write('idatID,name\n')
         output2.write('name,chromosome,position\n')
         head = f.readline()
-        while 'AddressA_ID' not in line and line != '':
-            line = f.readline()
-        if line == '':
+        while 'AddressA_ID' not in head and head != '':
+            head = f.readline()
+        if head == '':
             print('ERROR: unrecognized manifest format')
             sys.exit(1)
         head_list = head.rstrip('\n').split(',')
