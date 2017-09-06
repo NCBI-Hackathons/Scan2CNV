@@ -3,6 +3,7 @@
 import glob
 import sys
 import os
+import math
 import shutil
 import codecs
 from snakemake.utils import R
@@ -45,21 +46,10 @@ def getIdat(wildcards):
     col = wildcards.col
     return idatBaseDict[idatBase][col]
 
-
-def getGroups(wildcards):
-    col = wildcards.col
-    totSamps = 0
-    with open('all_sample_idat_intensity/idat_intensity_' + col + '.csv') as f:
-        head = f.readline()
-        line = f.readline()
-        while line != '':
-            totSamps += 1
-            line = f.readline()
-    numToNorm = float(samps_per_group)
-    numGroups = math.ceil(totSamps/numToNorm)
-    groups = []
-    for i in range(1, numGroups + 1):
-        groups.append(str(i))
+num_of_groups = math.ceil(len(idatBaseDict.keys())/float(samps_per_group))
+GROUPS = []
+for i in range(1, num_of_groups):
+    GROUPS.append(str(i))
 
 
 include: 'modules/Snakefile_idat_intensity'
@@ -68,6 +58,4 @@ include: 'modules/Snakefile_idat_intensity'
 rule all:
     input:
         expand('all_sample_idat_intensity/idat_intensity_{col}.csv', col = ['Red', 'Grn']),
-        expand('{col}_normalization_groups/{group}.txt', group = getGroups, col = ['Red', 'Grn'])
-
-
+        expand('{col}_normalization_groups/{group}.txt', col = ['Red', 'Grn'], group = GROUPS)

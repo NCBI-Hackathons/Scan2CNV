@@ -25,45 +25,70 @@ rule idat_intensity:
             Rout.write(rTxt)
         shell('module load R;R --vanilla < {output.R} > {output.Rout}')
 
-rule combine_idat_intensity:
+rule fail_intensity:
     input:
-        expand('idat_intensity_{{col}}/{idatBase}.intensity.txt', idatBase = idatBaseDict.keys())
+        expand('idat_intensity_{col}/{idatBase}.intensity.txt', idatBase = idatBaseDict.keys(), col = ['Red', 'Grn'])
+    output:
+        'fail_intensity/failed.csv'
     params:
         intensCutoff = float(fail_idat_intensity)
-    output:
-        good = 'all_sample_idat_intensity/idat_intensity_{col}.csv',
-        bad = 'all_sample_idat_intensity/fail_intensity_{col}.csv'
     run:
-        with open(output.good, 'w') as out1, open(output.bad, 'w') as out2:
-            out1.write('ChipId,MedianIntensity\n')
-            out2.write('ChipId,MedianIntensity\n')
+        with open(output[0], 'w') as out:
+            out.write('ChipId,Col,MedianIntensity\n')
             for i in input:
                 chipId = os.path.basename(i).split('.')[0]
+                col = os.path.dirname(i).split('/')[-1].split('_')[-1]
                 with open(i) as f:
                     line = f.readline()
                 medIntens = line.strip()
-                if float(medIntens) > params.intensCutoff:
-                    out1.write(','.join([chipId, medIntens]) + '\n')
-                else:
-                    out2.write(','.join([chipId, medIntens]) + '\n')
+                if float(medIntens) < params.intensCutoff:
+                    out.write(','.join([chipId, col, medIntens]) + '\n')
+
+rule combine_idat_intensity:
+    input:
+        intens = expand('idat_intensity_{{col}}/{idatBase}.intensity.txt', idatBase = idatBaseDict.keys()),
+        bad = 'fail_intensity/failed.csv'
+    params:
+        intensCutoff = float(fail_idat_intensity)
+    output:
+        'all_sample_idat_intensity/idat_intensity_{col}.csv'
+    run:
+        badChipDict = {}
+        with open(input.bad) as f:
+            head = f.readline()
+            line = f.readline()
+            while line != '':
+                samp = line.split(',')[0]
+                badChipDict[samp] = 1
+                line = f.readline()
+        with open(output[0], 'w') as out:
+            out.write('ChipId,MedianIntensity\n')
+            for i in input.intens:
+                chipId = os.path.basename(i).split('.')[0]
+                if not badChipDict.get(chipId):
+                    with open(i) as f:
+                        line = f.readline()
+                    medIntens = line.strip()
+                    out.write(','.join([chipId, medIntens]) + '\n')
 
 
 rule make_normalization_groups:
     input:
         'all_sample_idat_intensity/idat_intensity_{col}.csv'
     output:
-        groupFiles = expand('{{col}}_normalization_groups/{group}.txt', group = getGroups),
+        groupFiles = expand('{{col}}_normalization_groups/{group}.txt', group = GROUPS),
         R = '{col}_normalization_groups/makeGroups.R',
         Rout = '{col}_normalization_groups/makeGroups.R.out'
     params:
-        sampsPerGroup = samps_per_group
+        numOfGroups = str(num_of_groups)
     run:
         rTxt = '''
         data <- read.csv("''' + input[0] + '''")
         newdata <- data[order(data$MedianIntensity),]
-        samps_per_group <- ''' + params.sampsPerGroup + '''
+        num_of_groups <- ''' + params.numOfGroups + '''
         totSamps <- length(newdata$MedianIntensity)
-        groups <- 1:floor(totSamps/samps_per_group)
+        samps_per_group <- ceiling(totSamps/num_of_groups)
+        groups <- 1:(num_of_groups - 1)
         allIndex <- 1:totSamps
         for (g in groups){
         keepIndex <- sample(allIndex, samps_per_group, replace=FALSE)
