@@ -1,0 +1,43 @@
+#!/usr/bin/python
+
+rule idat_intensity:
+    input:
+        red = getRedIdat,
+        green = getGreenIdat
+    output:
+        txt = 'idat_intensity/{idatBase}.intensity.txt',
+        R = 'idat_intensity/{idatBase}.intensity.R',
+        Rout = 'idat_intensity/{idatBase}.intensity.R.out'
+    run:
+        rTxt = '''
+        medianIntensIdat <- function(redIdat, greenIdat){
+        require(illuminaio)
+        red <- readIDAT(redIdat)
+        green <- readIDAT(greenIdat)
+        Intens <- red$Quants[,1] + green$Quants[,1]
+        median(Intens)
+        }
+
+        medIntens <- medianIntensIdat("''' + input.red + '''", "''' + input.green + '''")
+        write.table(medIntens, file = "''' + output.txt + '''", quote = F, row.names = F, col.names = F) 
+        '''
+        with open(output.R, 'w') as Rout:
+            Rout.write(rTxt)
+        shell('module load R;R --vanilla < {output.R} > {output.Rout}')
+
+rule combine_idat_intensity:
+    input:
+        expand('idat_intensity/{idatBase}.intensity.txt', idatBase = idatBaseDict.keys())
+    output:
+        'all_sample_idat_intensity/idat_intensity.csv'
+    run:
+        with open(output[0], 'w') as out:
+            out.write('SampId,ChipId,MedianIntensity\n')
+            for i in input:
+                chipId = os.path.basename(i).split('.')[0]
+                sampId = chipIdToSampDict[chipId]
+                with open(i) as f:
+                    line = f.readline()
+                medIntens = line.strip()
+                out.write(','.join([sampId, chipId, medIntens]) + '\n')
+
