@@ -27,17 +27,57 @@ rule idat_intensity:
 
 rule combine_idat_intensity:
     input:
-        expand('idat_intensity_{col}/{idatBase}.intensity.txt', idatBase = idatBaseDict.keys())
+        expand('idat_intensity_{{col}}/{idatBase}.intensity.txt', idatBase = idatBaseDict.keys())
+    params:
+        intensCutoff = float(fail_idat_intensity)
     output:
-        'all_sample_idat_intensity/idat_intensity_{col}.csv'
+        good = 'all_sample_idat_intensity/idat_intensity_{col}.csv',
+        bad = 'all_sample_idat_intensity/fail_intensity_{col}.csv'
     run:
-        with open(output[0], 'w') as out:
-            out.write('SampId,ChipId,MedianIntensity\n')
+        with open(output.good, 'w') as out1, open(output.bad, 'w') as out2:
+            out1.write('ChipId,MedianIntensity\n')
+            out2.write('ChipId,MedianIntensity\n')
             for i in input:
                 chipId = os.path.basename(i).split('.')[0]
-                sampId = chipIdToSampDict[chipId]
                 with open(i) as f:
                     line = f.readline()
                 medIntens = line.strip()
-                out.write(','.join([sampId, chipId, medIntens]) + '\n')
+                if float(medIntens) > params.intensCutoff:
+                    out1.write(','.join([chipId, medIntens]) + '\n')
+                else:
+                    out2.write(','.join([chipId, medIntens]) + '\n')
 
+
+rule make_normalization_groups:
+    input:
+        'all_sample_idat_intensity/idat_intensity_{col}.csv'
+    output:
+        groupFiles = expand('{{col}}_normalization_groups/{group}.txt', group = getGroups),
+        R = '{col}_normalization_groups/makeGroups.R',
+        Rout = '{col}_normalization_groups/makeGroups.R.out'
+    params:
+        sampsPerGroup = samps_per_group
+    run:
+        rTxt = '''
+        data <- read.csv("''' + input[0] + '''")
+        newdata <- data[order(data$MedianIntensity),]
+        samps_per_group <- ''' + params.sampsPerGroup + '''
+        totSamps <- length(newdata$MedianIntensity)
+        groups <- 1:floor(totSamps/samps_per_group)
+        allIndex <- 1:totSamps
+        for (g in groups){
+        keepIndex <- sample(allIndex, samps_per_group, replace=FALSE)
+        write.table(newdata$ChipId[keepIndex], file = paste("''' + wildcards.col + '''_normalization_groups/", g, ".txt", sep = ""),
+        quote = F, row.names = F, col.names = F)
+        allIndex <- allIndex[!allIndex %in% keepIndex]
+        }
+        allSampsAgain <- 1:totSamps
+        newIndex <- allSampsAgain[!allSampsAgain %in% allIndex]
+        keepIndex <- c(allIndex, sample(newIndex, samps_per_group - length(allIndex), replace=FALSE))
+        write.table(newdata$ChipId[keepIndex], file = paste("''' + wildcards.col + '''_normalization_groups/", length(groups) + 1, ".txt", sep = ""), 
+        quote = F, row.names = F, col.names = F)
+        '''
+        with open(output.R, 'w') as Rout:
+            Rout.write(rTxt)
+        shell('module load R;R --vanilla < {output.R} > {output.Rout}')
+        
