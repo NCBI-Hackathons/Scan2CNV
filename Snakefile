@@ -13,7 +13,7 @@ idat_dir_file = config['idat_dir_file']
 
 
 
-def getIdats(idatDirFile, col):
+def getIdatList(idatDirFile, col):
     '''
     return a list of all idats of that channel (color)
     '''
@@ -26,14 +26,31 @@ def getIdats(idatDirFile, col):
                     idats.append(filename)
     return idats
 
-redIdats = getIdats(idat_dir_file, 'Red')
-greenIdats = getIdats(idat_dir_file, 'Grn')
+redIdats = getIdatList(idat_dir_file, 'Red')
+greenIdats = getIdatList(idat_dir_file, 'Grn')
+
+
+idatBaseDict = {}
+for i in redIdats:
+    idatBase = os.path.basename(i).rstrip('_Red.idat')
+    idatBaseDict[idatBase] = {}
+    idatBaseDict[idatBase]['Red'] = i
+for i in greenIdats:
+    idatBase = os.path.basename(i).rstrip('_Grn.idat')
+    idatBaseDict[idatBase]['Grn'] = i
+
+
+def getIdat(wildcards):
+    idatBase = wildcards.idatBase
+    col = wildcards.col
+    return idatBaseDict[idatBase][col]
+
 
 include: 'modules/Snakefile_idat_intensity'
 
 
 rule all:
     input:
-        'all_sample_idat_intensity/idat_intensity.csv'
+        expand('all_sample_idat_intensity/idat_intensity_{col}.csv', col = ['Red', 'Grn'])
 
 
