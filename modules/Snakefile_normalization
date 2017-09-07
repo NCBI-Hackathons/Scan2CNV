@@ -1,0 +1,51 @@
+#!/usr/bin/python
+
+rule bead_set_probes:
+    input:
+        illumina_csv
+    output:
+        expand('bead_set_probes/BeadSetID.{bead_set}.txt', bead_set = beadSetDict.keys())
+    run:
+        for beadOutFile in output:
+            beadSet = os.path.basename(beadOutFile).split('.')[1]
+            probes = beadSetDict[beadSet]
+            with open(beadOutFile, 'w') as out:
+                for p in probes:
+                    out.write(p + '\n')
+
+
+
+    
+rule normalize:
+    input:
+        sampGroup = '{col}_normalization_groups/{group}.txt',
+        beadSet = 'bead_set_probes/BeadSetID.{bead_set}.txt',
+        idats = getIdatFromGroup
+    output:
+        norm = '{col}_normalized_intensities/BeadSetID.{bead_set}.Group.{group}.csv',
+        R = '{col}_normalized_intensities/BeadSetID.{bead_set}.Group.{group}.R',
+        Rout = '{col}_normalized_intensities/BeadSetID.{bead_set}.Group.{group}.R.out'
+    run:
+        rTxt = '''
+        idats <- c("''' + '","'.join(input.idats) + '''")
+
+        GetIdatIntensityMatrix <- function(idatVector){
+        require(illuminaio)
+        idat1 <- readIDAT(idatVector[1])
+        m <- cbind(idat1$Quants[,1])
+        for (i in 2:length(idatVector)){
+                idat <- idatVector[i]
+                x <- readIDAT(idat)
+                m <- cbind(m, x$Quants[,1])
+                }
+        m
+        }
+        m <- GetIdatIntensityMatrix(idats)
+        beadSetProbes <- read.table("''' + input.beadSet + '''", colClasses = "character")[,1]
+        newM <- m[as.character(beadSetProbes),]
+        newNormM <- normalize.quantiles(newM)
+        row.names(newNormM) <- row.names(newM)
+        '''
+        with open(output.R, 'w') as Rout:
+            Rout.write(rTxt)
+        shell('module load R;R --vanilla < {output.R} > {output.Rout}')
