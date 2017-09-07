@@ -22,12 +22,17 @@ rule normalize:
         beadSet = 'bead_set_probes/BeadSetID.{bead_set}.txt',
         idats = getIdatFromGroup
     output:
-        norm = '{col}_normalized_intensities/BeadSetID.{bead_set}.Group.{group}.csv',
+        norm = '{col}_normalized_intensities/BeadSetID.{bead_set}.Group.{group}.txt',
         R = '{col}_normalized_intensities/BeadSetID.{bead_set}.Group.{group}.R',
         Rout = '{col}_normalized_intensities/BeadSetID.{bead_set}.Group.{group}.R.out'
     run:
+        chipIds = []
+        for i in input.idats:
+            chipIds.append(os.path.basename(i).rstrip('_' + wildcards.col + '.idat'))
         rTxt = '''
+        require(preprocessCore)
         idats <- c("''' + '","'.join(input.idats) + '''")
+        chipIds <- c("''' + '","'.join(chipIds) + '''")
 
         GetIdatIntensityMatrix <- function(idatVector){
         require(illuminaio)
@@ -45,7 +50,12 @@ rule normalize:
         newM <- m[as.character(beadSetProbes),]
         newNormM <- normalize.quantiles(newM)
         row.names(newNormM) <- row.names(newM)
+        colnames(newNormM) <- chipIds
+
+        writeLines("AddressA_ID", "''' + output.norm  + '''", sep ="")
+        write.table(newNormM, "''' + output.norm  + '''", sep = "\\t", quote = FALSE, append = TRUE, col.names=NA)
         '''
         with open(output.R, 'w') as Rout:
             Rout.write(rTxt)
         shell('module load R;R --vanilla < {output.R} > {output.Rout}')
+
