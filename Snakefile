@@ -126,4 +126,4 @@ rule all:
         expand('all_sample_idat_intensity/idat_intensity_{col}.csv', col = ['Red', 'Grn']),
         expand('{col}_normalization_groups/{group}.txt', col = ['Red', 'Grn'], group = GROUPS),
         expand('bead_set_probes/BeadSetID.{bead_set}.txt', bead_set = beadSetDict.keys()),
-        expand('{col}_normalized_intensities/BeadSetID.{bead_set}.Group.{group}.csv', col = ['Red', 'Grn'], bead_set = beadSetDict.keys(), group = GROUPS)
+        expand('{col}_normalized_intensities/BeadSetID.{bead_set}.Group.{group}.txt', col = ['Red', 'Grn'], bead_set = beadSetDict.keys(), group = GROUPS)
