@@ -60,11 +60,14 @@ def getIdatFromGroup(wildcards):
             idats.append(i)
     return idats
 
-
-num_of_groups = math.ceil(len(idatBaseDict.keys())/float(samps_per_group))
-GROUPS = []
-for i in range(1, num_of_groups):
-    GROUPS.append(str(i))
+if samps_per_group.lower() == 'all':
+    GROUPS = ['1']
+    num_of_groups = 1
+else:
+    num_of_groups = math.ceil(len(idatBaseDict.keys())/float(samps_per_group))
+    GROUPS = []
+    for i in range(1, num_of_groups):
+        GROUPS.append(str(i))
 
 beadSetDict = {}
 probeToPosDict = {}

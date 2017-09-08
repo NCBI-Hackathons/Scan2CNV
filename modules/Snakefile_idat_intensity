@@ -86,21 +86,26 @@ rule make_normalization_groups:
         data <- read.csv("''' + input[0] + '''")
         newdata <- data[order(data$MedianIntensity),]
         num_of_groups <- ''' + params.numOfGroups + '''
-        totSamps <- length(newdata$MedianIntensity)
-        samps_per_group <- ceiling(totSamps/num_of_groups)
-        groups <- 1:(num_of_groups - 1)
-        allIndex <- 1:totSamps
-        for (g in groups){
-        keepIndex <- sample(allIndex, samps_per_group, replace=FALSE)
-        write.table(newdata$ChipId[keepIndex], file = paste("''' + wildcards.col + '''_normalization_groups/", g, ".txt", sep = ""),
+        if (num_of_groups == 1){
+        write.table(newdata$ChipId, file = "''' + wildcards.col + '''_normalization_groups/1.txt",
         quote = F, row.names = F, col.names = F)
-        allIndex <- allIndex[!allIndex %in% keepIndex]
+        } else {
+                totSamps <- length(newdata$MedianIntensity)
+                samps_per_group <- ceiling(totSamps/num_of_groups)
+                groups <- 1:(num_of_groups - 1)
+                allIndex <- 1:totSamps
+                for (g in groups){
+                keepIndex <- sample(allIndex, samps_per_group, replace=FALSE)
+                write.table(newdata$ChipId[keepIndex], file = paste("''' + wildcards.col + '''_normalization_groups/", g, ".txt", sep = ""),
+                quote = F, row.names = F, col.names = F)
+                allIndex <- allIndex[!allIndex %in% keepIndex]
+                }
+                allSampsAgain <- 1:totSamps
+                newIndex <- allSampsAgain[!allSampsAgain %in% allIndex]
+                keepIndex <- c(allIndex, sample(newIndex, samps_per_group - length(allIndex), replace=FALSE))
+                write.table(newdata$ChipId[keepIndex], file = paste("''' + wildcards.col + '''_normalization_groups/", length(groups) + 1, ".txt", sep = ""), 
+                quote = F, row.names = F, col.names = F)
         }
-        allSampsAgain <- 1:totSamps
-        newIndex <- allSampsAgain[!allSampsAgain %in% allIndex]
-        keepIndex <- c(allIndex, sample(newIndex, samps_per_group - length(allIndex), replace=FALSE))
-        write.table(newdata$ChipId[keepIndex], file = paste("''' + wildcards.col + '''_normalization_groups/", length(groups) + 1, ".txt", sep = ""), 
-        quote = F, row.names = F, col.names = F)
         '''
         with open(output.R, 'w') as Rout:
             Rout.write(rTxt)
